@@ -1,20 +1,38 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
+import Footer from "./Components/Footer/Footer";
+import JoinPlayer from "./Components/JoinPlayer/joinplayer";
 import TicTacToe from './Components/TicTacToe/TicTacToe';
+import io from "socket.io-client";
+
+const socket = io.connect("http://localhost:3000");
 
 function App() {
-  useEffect(() => {
-    // fetch('ws://localhost:3000')
-    //   .then(res => res.json())
-    //   .then(data => console.log(data));
-  }, []);
+  const [showModal, setShowModal] = useState(false);
+  const [playerName, setPlayerName] = useState(null);
 
+  useEffect(() => {
+    console.log(playerName);
+    if (playerName) {
+      socket.emit("joinPlayer", playerName);
+    }
+  }, [playerName]);
 
   return (
-    <div>
-      <TicTacToe/>
-    </div>
+    <>
+      <JoinPlayer
+        showModal={showModal}
+        setShowModal={setShowModal}
+        setPlayerName={setPlayerName}
+      />
+      <div>
+        <TicTacToe socket={socket} playerName={playerName} />
+      </div>
+      <Footer setShowModal={setShowModal} />
+    </>
   );
+
+
 }
 
 export default App;
