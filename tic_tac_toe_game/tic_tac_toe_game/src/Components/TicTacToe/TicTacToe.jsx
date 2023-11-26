@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './TicTacToe.css'
 import Boxes from '../Box/Box'
+import cell1Audio from '../Assets/cell1.mp3'
+import cell2Audio from '../Assets/cell2.mp3'
 
 const TicTacToe = ({socket, playerName}) => 
 {
@@ -28,6 +30,7 @@ const TicTacToe = ({socket, playerName}) =>
             setBoard((data) => ({ ...data, [id]: "X" }));
             socket.emit("play", { id, playerName });
             setCanPlay(false);
+            playAudio(id);
         }
 
         if (
@@ -39,6 +42,31 @@ const TicTacToe = ({socket, playerName}) =>
           }
 
         checkWin();
+    };
+
+    const playAudio = (cellId) => 
+    {
+        let audioFile;
+
+        // Use an if-else statement to determine the audio file based on cellId
+        if (cellId === "0") 
+        {
+            audioFile = cell1Audio;
+        } 
+        else if (cellId === "1") 
+        {
+            audioFile = cell2Audio;
+        } 
+        else if (cellId === "2") 
+        {
+            audioFile = cell2Audio;
+        } 
+        else 
+        {
+          // Handle the case where cellId is not recognized
+          console.error(`Invalid cellId: ${cellId}`);
+          return;
+        }
     };
 
     let [count,setCount] = useState(0);
@@ -105,7 +133,7 @@ const TicTacToe = ({socket, playerName}) =>
         }
         else
         {
-            titleRef.current.innerHTML = `Congratulations: <i class='bx bx-circle circleIcon'></i>`;
+            titleRef.current.innerHTML = `Congratulations: <i class='bx bx-x crossIcon'></i>`;
         }
     }
 
